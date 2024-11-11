@@ -39,7 +39,7 @@ Cara pengerjaan, silahkan update file ini tulis jawabanya di bawah ini
     c. Infrastruktur Hybrid: Model infrastruktur yang menggabungkan infrastruktur lokal dan cloud sehingga memungkinkan perusahaan untuk mengontrol secara fleksibel.
     ```
 
-  Infrastuktur dalam Devops biasanya disebut dengan IaC (Infrastructure as a Code) yang digunakan untuk mengelola dan menyediakan infrastruktur menggunakan kode dan alat otomatisasi (Terraform, Ansible). Dengan menggunakan IaC, maka infrastruktur perusahaan dapat dikelola menjadi lebih efisien dan minim dari kesalahan.
+      Infrastuktur dalam Devops biasanya disebut dengan IaC (Infrastructure as a Code) yang digunakan untuk mengelola dan menyediakan infrastruktur menggunakan kode dan alat otomatisasi (Terraform, Ansible). Dengan menggunakan IaC, maka infrastruktur perusahaan dapat dikelola menjadi lebih efisien dan minim dari kesalahan.
 
 3. Server merupakan sistem yang menyediakan layanan atau sumber daya ke komputer lain di dalam jaringan. Server juga umumnya lebih baik dibandingkan dengan komputer biasa, yang memiliki kemampuan pemrosesan, penyimpanan, dan jaringan yang lebih baik.
 
@@ -55,16 +55,16 @@ Cara pengerjaan, silahkan update file ini tulis jawabanya di bawah ini
 
 5. Virtualisasi merupakan teknologi yang dapat membagi resource besar menjadi lebih kecil. Secara sederhana kita dapat menjalankan beberapa sistem operasi secara bersamaan menggunakan hypervisor. Hypervisor dalam virtualisasi adalah program untuk membuat dan menjalankan mesin virtual (VM) seperti VMware, dsb.
 
-Containerisasi merupakan sebuah metode atau teknik yang memungkinkan aplikasi dapat berjalan dalam lingkungan terisolasi tanpa harus menjalankan sistem operasi di setiap server yang terhubung. Containerisasi dijalankan menggunakan engine seperti docker ataupun kubernetes yang memungkinkan aplikasi dapat berjalan pada sistem operasi yang sama.
+    Containerisasi merupakan sebuah metode atau teknik yang memungkinkan aplikasi dapat berjalan dalam lingkungan terisolasi tanpa harus menjalankan sistem operasi di setiap server yang terhubung. Containerisasi dijalankan menggunakan engine seperti docker ataupun kubernetes yang memungkinkan aplikasi dapat berjalan pada sistem operasi yang sama.
 
-  Berikut perbandingan utama antara virtualisasi dan containerisasi:
-
-  ```
-  a. Pengelolaan: Kontainer lebih cepat dikelola dan diterapkan daripada virtual machine.
-  b. Keamanan: Virtual Machine memiliki keamanan yang lebih tinggi, sedangkan kontainer berisiko jika ada kerentanan di kernel.
-  c. Penggunaan: Virtual Machine cocok digunakan untuk aplikasi yang memerlukan sistem operasi berbeda, sedangkan kontainer cocok untuk aplikasi mikro-service.
-  d. Ukuran: Kontainer memiliki ukuran yang lebih kecil, sedangkan virtual machine memiliki ukuran yang lebih besar.
-  ```
+      Berikut perbandingan utama antara virtualisasi dan containerisasi:
+    
+      ```
+      a. Pengelolaan: Kontainer lebih cepat dikelola dan diterapkan daripada virtual machine.
+      b. Keamanan: Virtual Machine memiliki keamanan yang lebih tinggi, sedangkan kontainer berisiko jika ada kerentanan di kernel.
+      c. Penggunaan: Virtual Machine cocok digunakan untuk aplikasi yang memerlukan sistem operasi berbeda, sedangkan kontainer cocok untuk aplikasi mikro-service.
+      d. Ukuran: Kontainer memiliki ukuran yang lebih kecil, sedangkan virtual machine memiliki ukuran yang lebih besar.
+      ```
 
 6. Teknologi kontainer (docker & kubernetes) saat ini sangatlah populer dikarenakan beberapa alasan utama yang membuatnya ideal untuk melakukan pengembangan, distribusi, dan manajemen aplikasi.
 
@@ -81,7 +81,7 @@ Containerisasi merupakan sebuah metode atau teknik yang memungkinkan aplikasi da
       Dikarenakan kontainer memiliki ukuran yang kecil dan ringan, perusahaan dapat menghemat biaya pada infrastruktur komputasi cloud. Kontainer memungkinkan perusahaan untuk menggunakan lebih sedikit instance cloud, yang berujung pada penghematan biaya yang signifikan.
     ```
 
-  Teknologi kontainer pada saat ini sangatlah membantu perusahaan/organisasi dalam mengembangkan, menguji, dan mengelola suatu aplikasi/sistem dengan lebih cepat, aman, efisien, dan sebagainya yang menjadikannya salah satu teknologi terbaik dalam era digital saat ini.
+      Teknologi kontainer pada saat ini sangatlah membantu perusahaan/organisasi dalam mengembangkan, menguji, dan mengelola suatu aplikasi/sistem dengan lebih cepat, aman, efisien, dan sebagainya yang menjadikannya salah satu teknologi terbaik dalam era digital saat ini.
 
 7. Orchestration Container System merupakan sebuah proses untuk mengotomatiskan jaringan dan pengelolaan kontainer sehingga kita dapat menerapkan aplikasi dalam skala besar. Orchestration Container bertujuan untuk menyederhanakan manajemen infrastruktur kontainer dengan mengotomatiskan siklus hidup, mulai dari penyediaan, penjadwalan sampai deployment dan penghapusan.
 
