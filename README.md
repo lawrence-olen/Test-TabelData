@@ -93,6 +93,10 @@ Cara pengerjaan, silahkan update file ini tulis jawabanya di bawah ini
     c. Pemantauan ataupun monitoring terhadap status kontainer yang ada.
     ```
 
+> [!NOTE]
+> 
+> Penjelasan terkait tugas-tugas yang sudah dikerjakan ada pada file README.md dalam folder tasks.
+
 
 ## Task 1 (Virtualization)
 

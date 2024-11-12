@@ -392,3 +392,269 @@ Akses Frontend (https://frontend.olen.studentdumbways.my.id/)
 
 ![hasil_backend](../docs/container/hasil_backend.png)
 ![hasil_frontend](../docs/container/hasil_frontend.png)
+
+
+
+### kubernetes
+
+Disini saya ingin mencoba melakukan deployment aplikasi (database, backend, frontend) menggunakan Kubernetes Cluster.
+
+1. Langkah pertama melakukan installasi K3S untuk master dan worker, disini saya menggunakan ansible untuk melakukan installasi tersebut.
+
+  - K3S Master
+
+  ```
+  # Install K3S Master
+  - name: "Install K3S on node master"
+    shell: curl -sfL https://get.k3s.io | sh -
+
+  - name: "Fetch K3S token on node master"
+    shell: cat /var/lib/rancher/k3s/server/node-token
+    register: master_token
+    changed_when: false
+
+  - name: "Get master node IP and Token"
+    set_fact:
+      master_ip: "{{ ansible_host }}"
+      k3s_token: "{{ master_token.stdout }}"
+  ```
+
+  - K3S agent worker
+
+  ```
+  # Install K3S-Agent Worker
+  - name: "Install K3S agent on node worker"
+    shell: |
+      K3S_URL="https://{{ hostvars['master_tabledata'].master_ip }}:6443"
+      K3S_TOKEN="{{ hostvars['master_tabledata'].k3s_token }}"
+      curl -sfL https://get.k3s.io | K3S_URL=$K3S_URL K3S_TOKEN=$K3S_TOKEN sh -
+  ```
+
+  - Cek status apakah sudah terinstall atau belum dengan mengetikkan perintah ``` kubectl get nodes ```
+    ![periksa_status_installasi](../docs/kubernetes/kube_tabledata1.png)
+
+1. Selanjutnya, installasi Helm, Cert Manager dan Setup Ingress Nginx
+
+  ```
+  # Install Helm
+  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+  # Verfikasi installasi helm
+  helm version
+
+  # Tambahkan repository ingress nginx
+  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  helm repo update
+
+  # Install Ingress Nginx menggunakan helm
+  helm install ingress-nginx ingress-nginx/ingress-nginx -n your_namespace
+
+  # Tambahkan repository Cert Manager
+  helm repo add jetstack https://charts.jetstack.io
+  helm repo update
+
+  # Install Cert Manager menggunakan helm
+  helm install cert-manager jetstack/cert-manager -n your_namespace --version v1.11.0
+  ```
+
+3. Deployment Apps (Database, Backend, Frontend)
+
+  a. Database Deployment
+
+    Membuat file Deployment untuk Database, jangan lupa untuk membuat file secret.yaml terlebih dahulu untuk menyimpan informasi yang sensitif.
+
+    ```
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: postgres
+      namespace: tabledata
+    spec:
+      serviceName: "postgres"
+      replicas: 1
+      selector:
+        matchLabels:
+          app: postgres
+      template:
+        metadata:
+          labels:
+            app: postgres
+        spec:
+          containers:
+            - name: postgres
+              image: postgres:14.2
+              imagePullPolicy: IfNotPresent
+              ports:
+                - containerPort: 5432
+              envFrom:
+                - secretRef:
+                    name: postgres-secret
+              volumeMounts:
+                - name: postgres-data
+                  mountPath: /var/lib/postgresql/data
+          volumes:
+          - name: postgres-data
+            persistentVolumeClaim:
+              claimName: postgres-volume-claim
+
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      namespace: tabledata
+    spec:
+      selector:
+        app: postgres
+      ports:
+      - protocol: TCP
+        port: 5432
+        targetPort: 5432
+      type: ClusterIP
+    ```
+
+  b. Backend Deployment
+
+    Membuat file Deployment untuk aplikasi Backend, jangan lupa untuk membuat file secret.yaml terlebih dahulu untuk menyimpan informasi yang sensitif.
+
+    ```
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: backend
+      namespace: tabledata
+    spec:
+      replicas: 2
+      selector:
+        matchLabels:
+          app: backend
+      template:
+        metadata:
+          labels:
+            app: backend
+        spec:
+          containers:
+            - name: backend
+              image: dimmaryanto93/udemy-springboot-app:latest
+              ports:
+                - containerPort: 8080
+              envFrom:
+                - secretRef:
+                    name: backend-secret
+              env:
+                - name: DATABASE_HOST
+                  value: "postgres.tabledata.svc.cluster.local"  # Nama layanan PostgreSQL
+                - name: APPLICATION_PORT
+                  value: "8080"  # Port aplikasi backend
+
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: backend
+      namespace: tabledata
+    spec:
+      selector:
+        app: backend
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+          # nodePort: 30020
+      # type: NodePort
+      type: ClusterIP
+
+    ```
+
+  c. Frontend Deployment
+
+    Membuat file Deployment untuk aplikasi Frontend, jangan lupa untuk membuat file secret.yaml terlebih dahulu untuk menyimpan informasi yang sensitif.
+
+  ```
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: frontend
+    namespace: tabledata
+  spec:
+    replicas: 2
+    selector:
+      matchLabels:
+        app: frontend
+    template:
+      metadata:
+        labels:
+          app: frontend
+      spec:
+        containers:
+          - name: frontend
+            image: dimmaryanto93/udemy-angular-app:latest
+            ports:
+              - containerPort: 80
+            envFrom:
+              - secretRef:
+                  name: frontend-secret
+            env:
+              - name: BACKEND_HOST
+                value: "backend.tabledata.svc.cluster.local"  # Nama service backend dalam namespace
+
+  ---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: frontend
+    namespace: tabledata
+  spec:
+    selector:
+      app: frontend
+    ports:
+      - protocol: TCP
+        port: 80
+        targetPort: 80
+        # nodePort: 30025
+    # type: NodePort
+    type: ClusterIP
+  ```
+
+4. Menambahkan Ingress Nginx pada service backend dan frontend agar dapat diakses menggunakan domain yang aman (HTTPS)
+
+  ```
+  ---
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: ingress-frontend
+    namespace: tabledata
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+  spec:
+    ingressClassName: nginx
+    rules:
+      - host: kube-frontend.olen.studentdumbways.my.id
+        http:
+          paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: frontend
+                port: 
+                  number: 80
+    tls:
+      - hosts:
+          - kube-frontend.olen.studentdumbways.my.id
+        secretName: wildcard-tls-secret
+  ```
+
+5. Periksa selutuh status pada resource apakah sudah berjalan semua atau belum dengan menggunakan perintah ``` kubectl get all -n your_namespace ```
+
+  ![periksa_status_resources](../docs/kubernetes/kube_tabledata2.png)
+
+### Hasil Kubernetes
+
+Akses Kubernetes Backend (https://kube-backend.olen.studentdumbways.my.id/) 
+
+Akses Kubernetes Frontend (https://kube-frontend.olen.studentdumbways.my.id/)
+
+![hasil_kubernetes_backend](../docs/kubernetes/kube_tabledata3.png)
+![hasil_kubernetes_frontend](../docs/kubernetes/kube_tabledata4.png)
