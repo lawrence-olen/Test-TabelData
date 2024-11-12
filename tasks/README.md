@@ -4,7 +4,7 @@
 
 Pada Pre-Test ini saya menggunakan tools IaC (Infrastructure as a Code) yaitu Terraform dan Ansible. Lalu saya juga menggunakan Google Cloud Provider (GCP) sebagai Server (VM) yang akan dibuat.
 
-# Terraform
+### Terraform
 
 1. Melakukan setup arsitektur pada file providers.tf
 
@@ -107,7 +107,7 @@ Pada Pre-Test ini saya menggunakan tools IaC (Infrastructure as a Code) yaitu Te
   ![file-main.tf](../docs/terraform/terraform4.png)
 
 
-# Ansible
+### Ansible
 
   Untuk melihat screeshot dari setup yang sudah dijelaskan dibawah ini dapat anda lihat pada folder docs.
 
@@ -297,8 +297,8 @@ Pada Pre-Test ini saya menggunakan tools IaC (Infrastructure as a Code) yaitu Te
       - "81:80"
   ```
 
-# Hasil Task 1 (virtualization)
-  ![hasil_task1](../screeshot/task1.png)
+### Hasil Task 1 (virtualization)
+  ![hasil_task1](../screenshot/task1.png)
 
 
 
