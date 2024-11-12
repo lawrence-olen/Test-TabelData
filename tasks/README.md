@@ -26,7 +26,7 @@ provider "google" {
   zone = var.zone
 }
 ```
-![file-provider.tf](docs/terraform/terraform1.png)
+![file-provider.tf](../docs/terraform/terraform1.png)
 
 
 1. Membuat file variable.tf yang digunakan untuk mendefinisikan seluruh variabel yang akan dipakai nantinya.
@@ -49,7 +49,7 @@ variable "images_OS" {
   description = "OS Images for Server"
 }
 ```
-![file-variable.tf](docs/terraform/terraform2.png)
+![file-variable.tf](../docs/terraform/terraform2.png)
 
 
 3. Membuat file terraform.tfvars yang akan digunakan untuk mengatur nilai dari variabel yang sudah dibuat/didefinisikan pada file variable.tf.
@@ -65,7 +65,7 @@ images_OS = {
   }
 }
 ```
-![file-terraform.tfvars](docs/terraform/terraform3.png)
+![file-terraform.tfvars](../docs/terraform/terraform3.png)
 
 
 4. Terakhir, membuat file main.tf yang akan digunakan untuk membuat resource yang ingin dikelola pada infrastruktur.
@@ -104,7 +104,7 @@ resource "google_compute_instance" "vm_instances_tabeldata" {
   }
 }
 ```
-![file-main.tf](docs/terraform/terraform4.png)
+![file-main.tf](../docs/terraform/terraform4.png)
 
 
 
