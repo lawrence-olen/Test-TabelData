@@ -106,6 +106,16 @@ Pada Pre-Test ini saya menggunakan tools IaC (Infrastructure as a Code) yaitu Te
   ```
   ![file-main.tf](../docs/terraform/terraform4.png)
 
+  > [!NOTE]
+  > Beberapa perintah yang digunakan dalam konfigurasi terraform.
+  > 
+  > Terraform
+  > - terraform init
+  > - terraform validate
+  > - terraform plan
+  > - terraform apply
+  > - terraform destroy
+
 
 ### Ansible
 
@@ -297,9 +307,87 @@ Pada Pre-Test ini saya menggunakan tools IaC (Infrastructure as a Code) yaitu Te
       - "81:80"
   ```
 
+> [!NOTE]
+> Beberapa perintah yang digunakan dalam konfigurasi ansible.
+>
+> Ansible
+> - ansible-galaxy role init your_directory
+> - ansible-playbook --syntax-check your_file.yml
+> - ansible-playbook your_file.yml
+
+
 ### Hasil Task 1 (virtualization)
-  ![hasil_task1](../screenshot/task1.png)
+
+Akses Web Profile (https://tabeldata.olen.studentdumbways.my.id/)
+
+![hasil_task1](../screenshot/task1.png)
 
 
 
 ## Task 2 (Container)
+
+### Docker Compose
+
+- Sebelumnya docker dan docker compose sudah terinstall pada server menggunakan ansible
+
+- Membuat file docker-compose.yaml untuk melakukan deployment pada container database, backend, dan frontend. Untuk file .env dapat anda buat dan sesuaikan dengan kebutuhan yang diinginkan.
+
+  ```
+  services:
+  db:
+    container_name: postgresql
+    image: postgres:14.2
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    container_name: backend-container
+    image: dimmaryanto93/udemy-springboot-app:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      - APPLICATION_PORT=${APPLICATION_PORT_BACKEND}
+
+  frontend:
+    container_name: frontend-container
+    image: dimmaryanto93/udemy-angular-app:latest
+    restart: always
+    ports:
+      - "85:80"
+    depends_on:
+      - backend
+    env_file:
+      - .env
+
+  volumes:
+    postgresql_data:
+  ```
+
+> [!NOTE]
+> Beberapa perintah yang digunakan dalam konfigurasi docker compose.
+>
+> Docker Compose
+> - docker compose ps -a
+> - docker compose up -d / docker compose -f your_file.yml up -d
+> - docker compose down / docker compose -f your_file.yml down
+> - docker images
+> - docker logs service_name
+
+
+### Hasil Task 2 (container)
+
+Akses Backend (https://backend.olen.studentdumbways.my.id/)
+Akses Frontend (https://frontend.olen.studentdumbways.my.id/)
+
+![hasil_backend](../docs/container/hasil_backend.png)
+![hasil_frontend](../docs/container/hasil_frontend.png)
