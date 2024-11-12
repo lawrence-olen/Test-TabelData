@@ -1,0 +1,38 @@
+services:
+  db:
+    container_name: postgresql
+    image: postgres:14.2
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    container_name: backend-container
+    image: dimmaryanto93/udemy-springboot-app:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      - APPLICATION_PORT=${APPLICATION_PORT_BACKEND}
+
+  frontend:
+    container_name: frontend-container
+    image: dimmaryanto93/udemy-angular-app:latest
+    restart: always
+    ports:
+      - "85:80"
+    depends_on:
+      - backend
+    env_file:
+      - .env
+
+volumes:
+  postgresql_data:
